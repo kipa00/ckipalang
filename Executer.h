@@ -309,6 +309,10 @@ string executeCode(const byte *code, int len, int varlen) {
                         }
                         break;
                     }
+                    case OPERATOR_POP:
+                        literals.back().drop();
+                        literals.pop_back();
+                        break;
                     case OPERATOR_PRINT:
                         printBuffer += toString(evaluate(literals.back(), variables.begin()));
                         break;

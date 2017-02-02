@@ -16,14 +16,26 @@
 
 int main(int argc, const char *argv[]) {
 #ifdef DEBUG_MODE
-    char arr[1000];
-    fgets(arr, 1000, stdin);
-    pair<pair<int, int>, byte *> code = makeCode(arr);
-    int i;
-    for (i=0; i<code.first.first; ++i) {
-        printf("%02X ", code.second[i]);
+    pair<pair<int, int>, byte *> code;
+    if (argc == 1) {
+        char arr[1000];
+        fgets(arr, 1000, stdin);
+        code = makeCode(arr);
+        int i;
+        for (i=0; i<code.first.first; ++i) {
+            printf("%02X ", code.second[i]);
+        }
+        puts("");
+    } else {
+        FILE *fp = fopen(argv[1], "rb");
+        int bysz, varlen;
+        fread(&bysz, sizeof(int), 1, fp);
+        fread(&varlen, sizeof(int), 1, fp);
+        byte *cp = (byte *)malloc(bysz);
+        fread(cp, 1, bysz, fp);
+        fclose(fp);
+        code = std::make_pair(std::make_pair(bysz, varlen), cp);
     }
-    puts("");
     printf("%s\n", executeCode(code.second, code.first.first, code.first.second).c_str());
 #else
 #ifdef COMPILE_MODE

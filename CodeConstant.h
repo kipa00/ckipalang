@@ -49,28 +49,30 @@ const byte OPERATOR_IN = 17;
 const byte OPERATOR_RANGE = 18;
 const byte OPERATOR_LEN = 19;
 const byte OPERATOR_SCANINT = 20;
-const byte OPERATOR_JUMP = 21; // unused by the code
+const byte OPERATOR_WHILE = 21; // unused by the byte code
+const byte OPERATOR_JUMP = 22; // unused by the string code
+const byte OPERATOR_POP = 23; // unused by the string code
 
 const int OPERATOR_PRIORITY[] = {
     50, 50, 60, 60, 70,
     70, 30, 30, 40, 40,
     40, 60, 20, 0, 10,
     5, 80, 3, 90, 90,
-    90
+    90, 5
 };
 const int OPERATOR_ORDER[][2] = {
     {1, 1}, {1, 1}, {1, 1}, {1, 1}, {0, 1},
     {0, 1}, {0, 1}, {0, 1}, {1, 1}, {1, 1},
     {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1},
     {0, 2}, {1, 1}, {2, 1}, {0, 1}, {0, 1},
-    {0, 0}
+    {0, 0}, {0, 2}
 };
 const int OPERATOR_PARAMETERS[] = {
     2, 2, 2, 2, 1,
     1, 1, 1, 18, 18,
     18, 2, 34, 2, 2,
     2, 2, 3, 1, 1,
-    0
+    0, 2
 };
 
 #endif /* CodeConstant_h */

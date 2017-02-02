@@ -149,6 +149,8 @@ pair<pair<int, int>, byte *> makeCode(const char *code) {
                     op = OPERATOR_LEN;
                 } else if (equals(s, e, "scanint")) {
                     op = OPERATOR_SCANINT;
+                } else if (equals(s, e, "while")) {
+                    op = OPERATOR_WHILE;
                 }
             } else if (it->second == PARSE_MODE_SPECIAL) {
                 const char *one_op = "+-*/+++++<>%,;=";
@@ -284,6 +286,30 @@ pair<pair<int, int>, byte *> makeCode(const char *code) {
             temp += sizeof(int);
             *temp++ = (byte)(0x80 | opcode);
             memcpy(temp, state->v.first, state->v.second);
+        } else if (opcode == OPERATOR_WHILE) { // 0 <cond> <idx> if pop <state> <idx> jump pop
+            LinkedList<entry> *cond = start->n, *state = start->n->n;
+            nowop->v.first = malloc(nowop->v.second = 7 + sizeof(int) * 3 + len);
+            byte *temp = (byte *)nowop->v.first;
+            *temp++ = PREPROCESS_INT;
+            int l = 0;
+            memcpy(temp, &l, sizeof(int));
+            temp += sizeof(int);
+            memcpy(temp, cond->v.first, cond->v.second);
+            temp += cond->v.second;
+            *temp++ = PREPROCESS_INT;
+            l = state->v.second + 3 + sizeof(int);
+            memcpy(temp, &l, sizeof(int));
+            temp += sizeof(int);
+            *temp++ = (byte)(PREPROCESS_OPERATION | OPERATOR_IF);
+            *temp++ = (byte)(PREPROCESS_OPERATION | OPERATOR_POP);
+            memcpy(temp, state->v.first, state->v.second);
+            temp += state->v.second;
+            *temp++ = PREPROCESS_INT;
+            l = -l - 2 - sizeof(int) - cond->v.second;
+            memcpy(temp, &l, sizeof(int));
+            temp += sizeof(int);
+            *temp++ = (byte)(PREPROCESS_OPERATION | OPERATOR_JUMP);
+            *temp++ = (byte)(PREPROCESS_OPERATION | OPERATOR_POP);
         } else {
             nowop->v.first = malloc(nowop->v.second = 1 + len);
             byte *temp = (byte *)nowop->v.first;
