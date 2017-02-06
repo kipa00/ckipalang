@@ -38,7 +38,7 @@ KipaList *ebyeProcess(KipaList *a, KipaList *b, byte opcode) {
     for (i=0; i<mx; ++i) {
         res->push(operation((*a->v)[i % as], (*b->v)[i % bs], opcode, false));
     }
-    
+
     for (i=0; i<as; ++i) {
         (*a->v)[i].drop();
     }

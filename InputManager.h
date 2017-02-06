@@ -15,7 +15,7 @@ namespace bufin {
     const int BUFSIZE = 10240;
     char arr[BUFSIZE + 1];
     char *ptr = arr + BUFSIZE;
-    
+
     char getch() {
         if (ptr == arr + BUFSIZE) {
             fread(arr, 1, BUFSIZE, stdin);
@@ -23,7 +23,7 @@ namespace bufin {
         }
         return *ptr++;
     }
-    
+
     int scanint() {
         int s = 0;
         int g = getch();
