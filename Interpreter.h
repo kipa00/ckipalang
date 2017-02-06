@@ -155,7 +155,7 @@ pair<pair<int, int>, byte *> makeCode(const char *code) {
             } else if (it->second == PARSE_MODE_SPECIAL) {
                 const char *one_op = "+-*/+++++<>%,;=";
                 if (it->first.second - it->first.first == 1) {
-                    char *idx;
+                    const char *idx;
                     if ((idx = strchr(one_op, code[it->first.first]))) {
                         op = (int)(idx - one_op);
                         if (op == 0 || op == 1) {
