@@ -144,6 +144,7 @@ string executeCode(const byte *code, int len, int varlen) {
             case PREPROCESS_STRING:
             {
                 Data d;
+                temp_kl = new KipaList;
                 int sz = (int)(unsigned short)readShort(&now), i;
                 for (i=0; i<sz; ++i) {
                     temp_kl->push(dataMakeFrom((int)(unsigned short)readShort(&now), PREPROCESS_INT));
