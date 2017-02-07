@@ -13,7 +13,7 @@ g++ -DDEBUG_MODE -std=c++0x main.cpp -o kipadb
 g++ -DCOMPILE_MODE -std=c++0x main.cpp -o kipac
 
 # To make a kipalang runtime
-g++ -std=c++0x main.cpp -o kipa
+g++ -std=c++0x main.cpp -o kipa -O2
 ```
 
 To run a helloworld:
