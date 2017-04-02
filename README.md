@@ -6,14 +6,11 @@ The standard kipalang, ported from pykipalang.
 To build a ckipalang toolchain:
 
 ```bash
-# To make a kipalang debugger
-g++ -DDEBUG_MODE -std=c++0x main.cpp -o kipadb
+# To make a kipalang compiler and runtime
+make
 
-# To make a kipalang compiler
-g++ -DCOMPILE_MODE -std=c++0x main.cpp -o kipac
-
-# To make a kipalang runtime
-g++ -std=c++0x main.cpp -o kipa -O2
+# To clean all files
+make clean
 ```
 
 To run a helloworld:
