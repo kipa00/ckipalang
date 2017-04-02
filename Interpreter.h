@@ -292,7 +292,7 @@ pair<pair<int, int>, byte *> makeCode(const char *code) {
             *temp++ = PREPROCESS_INT;
             memcpy(temp, &state->v.second, sizeof(int));
             temp += sizeof(int);
-            *temp++ = (byte)(0x80 | opcode);
+            *temp++ = (byte)(PREPROCESS_OPERATION | opcode);
             memcpy(temp, state->v.first, state->v.second);
         } else if (opcode == OPERATOR_WHILE) { // 0 <cond> <idx> if pop <state> <idx> jump pop
             LinkedList<entry> *cond = start->n, *state = start->n->n;
@@ -328,7 +328,7 @@ pair<pair<int, int>, byte *> makeCode(const char *code) {
                     free(it2->v.first);
                 }
             }
-            *temp = (byte)(0x80 | opcode);
+            *temp = (byte)(PREPROCESS_OPERATION | opcode);
         }
         if (start->l) {
             start->l->n = nowop;
@@ -340,6 +340,9 @@ pair<pair<int, int>, byte *> makeCode(const char *code) {
         }
         nowop->l = start->l;
         nowop->n = end->n;
+    }
+    if (first->n) {
+        // OperandTieError
     }
     int sz = first->v.second;
     byte *result = (byte *)malloc(sz);

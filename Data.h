@@ -121,7 +121,7 @@ inline int processBoolOperator(_T a, _T b, byte op) {
 }
 
 template<typename _T1, typename _T2>
-Data makeWithData(_T1 a, _T2 *b, int t, Data* ld) {
+inline Data makeWithData(_T1 a, _T2 *b, int t, Data* ld) {
     _T2 temp = (_T2)a;
     Data d(sizeof(_T2), &temp);
     d.t = t;
@@ -130,34 +130,39 @@ Data makeWithData(_T1 a, _T2 *b, int t, Data* ld) {
 }
 
 Data type_cast(Data d, int to) {
-    if (to == PROCESS_LIST) {
-        KipaList *res = new KipaList;
-        res->push(d);
-        Data dr;
-        dr.d = (void *)res;
-        dr.l = sizeof(KipaList);
-        dr.t = PROCESS_LIST;
-        return dr;
+    const int sep = 4;
+    KipaList *res;
+    Data dr;
+    switch ((d.t << sep) | to) {
+        case (PREPROCESS_INT << sep) | PROCESS_LIST:
+        case (PREPROCESS_LONG << sep) | PROCESS_LIST:
+        case (PREPROCESS_FLOAT << sep) | PROCESS_LIST:
+        case (PROCESS_LIST << sep) | PROCESS_LIST:
+            res = new KipaList;
+            res->push(d);
+            dr.d = (void *)res;
+            dr.l = sizeof(KipaList);
+            dr.t = PROCESS_LIST;
+            return dr;
+        case (PREPROCESS_INT << sep) | PREPROCESS_INT:
+        case (PREPROCESS_LONG << sep) | PREPROCESS_LONG:
+        case (PREPROCESS_FLOAT << sep) | PREPROCESS_FLOAT:
+            return d;
+        case (PREPROCESS_INT << sep) | PREPROCESS_LONG:
+            return makeWithData(*(int *)d.d, (long long int *)nullptr, to, &d);
+        case (PREPROCESS_INT << sep) | PREPROCESS_FLOAT:
+            return makeWithData(*(int *)d.d, (double *)nullptr, to, &d);
+        case (PREPROCESS_LONG << sep) | PREPROCESS_INT:
+            return makeWithData(*(long long int *)d.d, (int *)nullptr, to, &d);
+        case (PREPROCESS_LONG << sep) | PREPROCESS_FLOAT:
+            return makeWithData(*(long long int *)d.d, (double *)nullptr, to, &d);
+        case (PREPROCESS_FLOAT << sep) | PREPROCESS_INT:
+            return makeWithData(*(double *)d.d, (int *)nullptr, to, &d);
+        case (PREPROCESS_FLOAT << sep) | PREPROCESS_LONG:
+            return makeWithData(*(double *)d.d, (long long int *)nullptr, to, &d);
     }
-    if (d.t == to) {
-        return d;
-    }
-    if (d.t == PREPROCESS_INT && to == PREPROCESS_LONG) {
-        return makeWithData(*(int *)d.d, (long long int *)nullptr, to, &d);
-    } else if (d.t == PREPROCESS_INT && to == PREPROCESS_FLOAT) {
-        return makeWithData(*(int *)d.d, (double *)nullptr, to, &d);
-    } else if (d.t == PREPROCESS_LONG && to == PREPROCESS_INT) {
-        return makeWithData(*(long long int *)d.d, (int *)nullptr, to, &d);
-    } else if (d.t == PREPROCESS_LONG && to == PREPROCESS_FLOAT) {
-        return makeWithData(*(long long int *)d.d, (double *)nullptr, to, &d);
-    } else if (d.t == PREPROCESS_FLOAT && to == PREPROCESS_INT) {
-        return makeWithData(*(double *)d.d, (int *)nullptr, to, &d);
-    } else if (d.t == PREPROCESS_FLOAT && to == PREPROCESS_LONG) {
-        return makeWithData(*(double *)d.d, (long long int *)nullptr, to, &d);
-    }
-    Data r;
-    r.l = -1;
-    return r;
+    dr.l = -1;
+    return dr;
 }
 
 Data operation(Data d, byte opcode) {

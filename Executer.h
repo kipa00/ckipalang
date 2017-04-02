@@ -22,6 +22,7 @@
 #include "Data.h"
 #include "InputManager.h"
 #include "KipaList.h"
+#include "StringList.h"
 using std::string;
 
 inline byte readByte(const byte **cpt) {
@@ -174,6 +175,15 @@ string executeCode(const byte *code, int len, int varlen) {
                         d1 = literals.back();
                         subst(d1, d2, variables.begin());
                         d2.drop();
+                        break;
+                    case OPERATOR_SUBSTITUTE_IMM:
+                        d2 = evaluate(literals.back(), variables.begin());
+                        literals.pop_back();
+                        d1 = literals.back();
+                        subst(d1, d2, variables.begin());
+                        d2.drop();
+                        d1.drop();
+                        literals.pop_back();
                         break;
                     case OPERATOR_INDEX:
                         d2 = type_cast(evaluate(literals.back(), variables.begin()), PREPROCESS_INT);
